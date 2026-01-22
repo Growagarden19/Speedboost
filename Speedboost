@@ -1,20 +1,9 @@
---// CUSTOM KICK MESSAGE FOR LEAKERS
+-- DELTA KICK SCRIPT
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
 
--- Your custom message
-local KICK_MESSAGE = "⚠️ Someone leaked this script! Please contact the owner."
-
--- Function to kick the player with the message
-local function kickPlayer()
-    -- Protect it with pcall so nothing breaks
-    pcall(function()
-        LocalPlayer:Kick(KICK_MESSAGE)
-    end)
-end
-
--- Example: check for "leak condition"
--- Here you can check for anything you consider a leak
--- For demo, let's just kick if the player's name is not yours
--- Replace "YourUsernameHere" with your Roblox username
-if LocalPlayer.Name ~= "YourUs
+pcall(function()
+    LocalPlayer:Kick(
+        "Kulit mo ah, block mo pa ako sa live para di ko makita na nagamit ka ibang acc lol."
+    )
+end)
