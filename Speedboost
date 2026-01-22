@@ -1,46 +1,36 @@
-local HttpService = game:GetService("HttpService")
-local TeleportService = game:GetService("TeleportService")
+-- ===== SETTINGS =====
+local SOUND_ID = "rbxassetid://1843521693" -- example scary/freeze sound
+local SCREEN_COLOR = Color3.new(0,0,0) -- black
+local SCREEN_TRANSPARENCY = 0 -- 0 = fully black
+
+-- ===== SERVICES =====
 local Players = game:GetService("Players")
-
-local PlaceId = game.PlaceId
 local player = Players.LocalPlayer
+local PlayerGui = player:WaitForChild("PlayerGui")
+local SoundService = game:GetService("SoundService")
 
--- Table to store already visited server IDs
-local visitedServers = {}
+-- ===== CREATE BLACK SCREEN =====
+local blackFrame = Instance.new("ScreenGui")
+blackFrame.Name = "FreezeEffect"
+blackFrame.ResetOnSpawn = false
+blackFrame.Parent = PlayerGui
 
-local function getServerList()
-    local servers = {}
-    local url = "https://games.roblox.com/v1/games/"..PlaceId.."/servers/Public?sortOrder=Asc&limit=100"
-    local success, response = pcall(function()
-        return game:HttpGet(url)
-    end)
+local frame = Instance.new("Frame")
+frame.Size = UDim2.new(1,0,1,0)
+frame.Position = UDim2.new(0,0,0,0)
+frame.BackgroundColor3 = SCREEN_COLOR
+frame.BackgroundTransparency = SCREEN_TRANSPARENCY
+frame.BorderSizePixel = 0
+frame.Parent = blackFrame
 
-    if success then
-        local data = HttpService:JSONDecode(response)
-        for _, server in ipairs(data.data) do
-            if server.playing < server.maxPlayers and not visitedServers[server.id] then
-                table.insert(servers, server)
-            end
-        end
-    end
+-- Block all input
+frame.Active = true
+frame.Selectable = true
 
-    return servers
-end
-
-local function hopServer()
-    local servers = getServerList()
-    if #servers == 0 then
-        warn("No available servers to join!")
-        return
-    end
-
-    -- Pick a random server from available ones
-    local server = servers[math.random(1, #servers)]
-    visitedServers[server.id] = true
-
-    print("Teleporting to server: "..server.id.." ("..server.playing.."/"..server.maxPlayers..")")
-    TeleportService:TeleportToPlaceInstance(PlaceId, server.id, player)
-end
-
--- Example usage
-hopServer()
+-- ===== PLAY SOUND =====
+local sound = Instance.new("Sound")
+sound.SoundId = SOUND_ID
+sound.Volume = 1
+sound.Looped = true
+sound.Parent = SoundService
+sound:Play()
